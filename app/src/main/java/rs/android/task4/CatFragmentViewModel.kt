@@ -15,4 +15,8 @@ class CatFragmentViewModel : ViewModel() {
     fun addCat(cat: Cat) {
         repository.addCat(cat)
     }
+
+    fun deleteCat(cat: Cat) {
+        repository.deleteCat(cat)
+    }
 }

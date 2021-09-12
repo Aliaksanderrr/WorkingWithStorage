@@ -6,26 +6,39 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import rs.android.task4.TAG
 import rs.android.task4.data.Cat
-import rs.android.task4.repository.database.CatDatabase
+import rs.android.task4.repository.databaseCursor.CatSQLiteOpenHelper
+import rs.android.task4.repository.databaseRoom.CatDatabase
 import java.util.concurrent.Executors
 
-private const val DATABASE_NAME = "CatsDatabase"
+const val DATABASE_NAME = "CatsDatabase"
 
 class Repository private constructor(appContext: Context) {
 
-    private val database: CatDatabase = Room.databaseBuilder(appContext, CatDatabase::class.java, DATABASE_NAME)
-                                            .build()
+//
+//    private val database: CatDatabase = Room.databaseBuilder(appContext, CatDatabase::class.java, DATABASE_NAME)
+//                                            .build()
+//
+//    private val database: RepositoryDAO = Room.databaseBuilder(appContext, CatDatabase::class.java, DATABASE_NAME)
+//                                            .build()
+    private val database: RepositoryDAO = CatSQLiteOpenHelper(appContext, DATABASE_NAME)
+
     private val executor = Executors.newSingleThreadExecutor()
 
 
 
     fun getCats(): LiveData<List<Cat>>{
-       return database.catDao().getCats()
+       return database.getCats()
     }
 
     fun addCat(cat: Cat) {
         executor.execute {
-            database.catDao().addCat(cat)
+            database.addCat(cat)
+        }
+    }
+
+    fun deleteCat(cat: Cat) {
+        executor.execute {
+            database.deleteCat(cat)
         }
     }
 

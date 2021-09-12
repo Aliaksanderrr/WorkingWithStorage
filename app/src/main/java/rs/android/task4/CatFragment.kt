@@ -9,14 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import rs.android.task4.data.Cat
 import rs.android.task4.databinding.FragmentCatBinding
 import rs.android.task4.databinding.FragmentListCatItemBinding
-
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 
 class CatFragment : Fragment() {
 
@@ -35,6 +33,11 @@ class CatFragment : Fragment() {
 
         binding.catsRecycler.layoutManager = LinearLayoutManager(context)
         binding.catsRecycler.adapter = adapter
+
+        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(binding.catsRecycler)
+
 
         return binding.root
     }
@@ -65,30 +68,7 @@ class CatFragment : Fragment() {
         super.onDestroy()
     }
 
-//    private fun updateUI(cats: List<Cat>){
-//        adapter.let {
-//            it.cats = cats
-//        }
-//        binding.catsRecycler.adapter = adapter
-//    }
-
-//    private inner class CatAdapter(var cats: List<Cat>) : RecyclerView.Adapter<CatHolder>(){
-//
-//        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatHolder {
-//            val itemBinding = FragmentListCatItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-//            Log.d(TAG, "CatAdapter fun onCreateViewHolder(): ${cats.size}")
-//            return CatHolder(itemBinding)
-//        }
-//
-//        override fun onBindViewHolder(holder: CatHolder, position: Int) {
-//            holder.bind(cats[position])
-//        }
-//
-//        override fun getItemCount(): Int = cats.size
-//
-//    }
-
-    private class CatAdapter : ListAdapter<Cat, CatHolder>(CatDiffUtilCallback()){
+    private inner class CatAdapter : ListAdapter<Cat, CatHolder>(CatDiffUtilCallback()), ItemTouchHelperAdapter{
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatHolder {
             return CatHolder.from(parent)
@@ -99,6 +79,11 @@ class CatFragment : Fragment() {
             holder.bind(catItem)
         }
 
+        override fun onItemDismiss(position: Int) {
+            val catItem = getItem(position)
+            Toast.makeText( context, "delete cat name:${catItem.name}", Toast.LENGTH_SHORT).show()
+            viewModel.deleteCat(catItem)
+        }
 
     }
 
@@ -126,6 +111,37 @@ class CatFragment : Fragment() {
         override fun areContentsTheSame(oldItem: Cat, newItem: Cat): Boolean {
             return oldItem == newItem
         }
+    }
+
+    interface ItemTouchHelperAdapter {
+        fun onItemDismiss(position: Int)
+    }
+
+    private class SimpleItemTouchHelperCallback(val mAdapter: ItemTouchHelperAdapter): ItemTouchHelper.Callback(){
+
+        override fun getMovementFlags(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
+            return makeMovementFlags(dragFlags, swipeFlags)
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            mAdapter.onItemDismiss(viewHolder.adapterPosition);
+        }
+
+        override fun isItemViewSwipeEnabled(): Boolean{ return true}
+
     }
 
 

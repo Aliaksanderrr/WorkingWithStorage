@@ -1,4 +1,4 @@
-package rs.android.task4.repository.database
+package rs.android.task4.repository.databaseRoom
 
 import androidx.room.TypeConverter
 import java.util.*

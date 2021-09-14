@@ -3,33 +3,47 @@ package rs.android.task4
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.*
 import rs.android.task4.data.Cat
-import rs.android.task4.databinding.FragmentCatBinding
 import rs.android.task4.databinding.FragmentListCatItemBinding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import rs.android.task4.databinding.FragmentListCatsBinding
 
-class CatFragment : Fragment() {
 
-    private var _binding: FragmentCatBinding? = null
+class CatsListFragment : Fragment() {
+
+    interface CatInfoListener{
+        fun chosenCat(cat: Cat)
+    }
+
+    private lateinit var listener: CatInfoListener
+    private var _binding: FragmentListCatsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: CatFragmentViewModel
+    private lateinit var viewModel: CatsListFragmentViewModel
 
     private var adapter: CatAdapter = CatAdapter()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCatBinding.inflate(inflater, container,false)
-        viewModel = ViewModelProvider(this).get(CatFragmentViewModel::class.java)
+        if (context is CatInfoListener){
+            listener = context as CatInfoListener
+        }
+
+        _binding = FragmentListCatsBinding.inflate(inflater, container,false)
+        viewModel = ViewModelProvider(this).get(CatsListFragmentViewModel::class.java)
 
         binding.catsRecycler.layoutManager = LinearLayoutManager(context)
         binding.catsRecycler.adapter = adapter
@@ -38,7 +52,6 @@ class CatFragment : Fragment() {
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(binding.catsRecycler)
 
-
         return binding.root
     }
 
@@ -46,11 +59,13 @@ class CatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.title = "Cats"
         binding.floatingActionButton.setOnClickListener {
-            //TODO create new fragment
-            viewModel.addCat(Cat(name = "Tom${num++}", breed = "Sara${num++}"))
-            Toast.makeText( context, "add cat", Toast.LENGTH_SHORT).show()
+            listener.chosenCat(Cat())
+//            viewModel.addCat(Cat(name = "Tom${num++}", breed = "Sara${num++}"))
+//            Toast.makeText( context, "add cat", Toast.LENGTH_SHORT).show()
         }
+
     }
 
     override fun onStart() {
@@ -68,10 +83,25 @@ class CatFragment : Fragment() {
         super.onDestroy()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_list_cats, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.filter -> {
+                Toast.makeText( context, "push", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
     private inner class CatAdapter : ListAdapter<Cat, CatHolder>(CatDiffUtilCallback()), ItemTouchHelperAdapter{
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatHolder {
-            return CatHolder.from(parent)
+            return CatHolder.from(parent, listener)
         }
 
         override fun onBindViewHolder(holder: CatHolder, position: Int) {
@@ -87,19 +117,31 @@ class CatFragment : Fragment() {
 
     }
 
-    private class CatHolder(private val itemBinding: FragmentListCatItemBinding) : RecyclerView.ViewHolder(itemBinding.root){
+    private class CatHolder(private val itemBinding: FragmentListCatItemBinding, private val listener: CatInfoListener) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
+
+        private lateinit var cat: Cat
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
         fun bind(cat: Cat){
+            this.cat = cat
             itemBinding.catName.text = cat.name
             itemBinding.catAge.text = cat.birthday.toString()
             itemBinding.catBreed.text = cat.breed
         }
 
         companion object {
-            fun from(parent: ViewGroup): CatHolder {
+            fun from(parent: ViewGroup, listener: CatInfoListener): CatHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = FragmentListCatItemBinding.inflate(layoutInflater, parent, false)
-                return CatHolder(binding)
+                return CatHolder(binding, listener)
             }
+        }
+
+        override fun onClick(v: View?) {
+            listener.chosenCat(cat)
         }
     }
 
@@ -141,12 +183,10 @@ class CatFragment : Fragment() {
         }
 
         override fun isItemViewSwipeEnabled(): Boolean{ return true}
-
     }
 
-
     companion object {
-        fun newInstance() = CatFragment()
+        fun newInstance() = CatsListFragment()
     }
 
 }

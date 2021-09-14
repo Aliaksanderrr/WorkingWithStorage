@@ -36,6 +36,12 @@ class Repository private constructor(appContext: Context) {
         }
     }
 
+    fun updateCat(cat: Cat){
+        executor.execute {
+            database.updateCat(cat)
+        }
+    }
+
     fun deleteCat(cat: Cat) {
         executor.execute {
             database.deleteCat(cat)

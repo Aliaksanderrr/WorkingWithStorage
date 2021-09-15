@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        app:key="@string/filter_key"
+        app:title="Filter field"
+        app:summary="Filters the list items by the selected field"
+        app:defaultValue="1"
+        android:entries="@array/filter_field"
+        android:entryValues="@array/filter_field"
+        android:dialogTitle="Select the field of interest"/>
+
+</PreferenceScreen>

@@ -7,4 +7,5 @@
     <string name="add">Add</string>
     <string name="update">Update</string>
     <string name="filter">Filter</string>
+    <string name="filter_key">filter_field</string>
 </resources>

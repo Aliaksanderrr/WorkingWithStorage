@@ -19,4 +19,9 @@ class CatsListFragmentViewModel : ViewModel() {
     fun deleteCat(cat: Cat) {
         repository.deleteCat(cat)
     }
+
+    fun updateCatsList(){
+        repository.getCats()
+    }
+
 }

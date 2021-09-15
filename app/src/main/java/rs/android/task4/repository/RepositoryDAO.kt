@@ -6,7 +6,7 @@ import java.util.*
 
 interface RepositoryDAO {
 
-    fun getCats(): LiveData<List<Cat>>
+    fun getCats(filter: String): LiveData<List<Cat>>
 
     fun getCat(id: UUID): LiveData<Cat?>
 

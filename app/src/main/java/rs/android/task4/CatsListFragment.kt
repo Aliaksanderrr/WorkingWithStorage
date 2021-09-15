@@ -7,6 +7,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.*
 import rs.android.task4.data.Cat
 import rs.android.task4.databinding.FragmentListCatItemBinding
@@ -19,6 +20,7 @@ class CatsListFragment : Fragment() {
 
     interface CatInfoListener{
         fun chosenCat(cat: Cat)
+        fun callFilter()
     }
 
     private lateinit var listener: CatInfoListener
@@ -76,6 +78,15 @@ class CatsListFragment : Fragment() {
 //                updateUI(cats)
                 adapter.submitList(cats)
         }})
+
+//        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+//        Toast.makeText(context, "Pref: ${pref.getString("filter_field", "none")}", Toast.LENGTH_LONG ).show()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateCatsList()
     }
 
     override fun onDestroy() {
@@ -91,6 +102,7 @@ class CatsListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.filter -> {
+                listener.callFilter()
                 Toast.makeText( context, "push", Toast.LENGTH_SHORT).show()
                 true
             }

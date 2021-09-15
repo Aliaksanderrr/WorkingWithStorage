@@ -50,9 +50,11 @@ class CatInfoFragment: Fragment() {
                 if (isAdd){
                     viewModel.addCat(newCat)
                     binding.actionButton.text = context?.getString(R.string.update)
+                    Toast.makeText( context, "Added", Toast.LENGTH_SHORT).show()
                     isAdd = false
                 } else {
                     viewModel.updateCat(newCat)
+                    Toast.makeText( context, "Updated", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(context, "Fields are not filled",Toast.LENGTH_SHORT).show()

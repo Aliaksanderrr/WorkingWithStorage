@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import rs.android.task4.data.Cat
 import rs.android.task4.repository.Repository
 import rs.android.task4.repository.RepositoryDAO
@@ -31,6 +32,12 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
     DATABASE_VERSION) {
 
     private val listCatsLiveData = MutableLiveData<List<Cat>>()
+    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
+
+    private fun getFilter(): String{
+        return pref.getString("filter_field", "id").toString()
+    }
+
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_TABLE_SQL)
@@ -42,13 +49,14 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
 
     }
 
-    private fun getCursorWithCats(): Cursor{
-        return readableDatabase.rawQuery("SELECT * FROM $TABLE_NAME", null)
+    private fun getCursorWithCats(filter: String): Cursor{
+        return readableDatabase.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $filter", null)
+//        return readableDatabase.rawQuery("SELECT * FROM $TABLE_NAME", null)
     }
 
-    override fun getCats(): LiveData<List<Cat>>{
+    override fun getCats(filter: String): LiveData<List<Cat>> {
         val listOfCats = mutableListOf<Cat>()
-        getCursorWithCats().use { cursor ->
+        getCursorWithCats(filter).use { cursor ->
             if(cursor.moveToFirst()){
                 do {
                     val id = UUID.fromString(cursor.getString(cursor.getColumnIndex(CAT_ID)))
@@ -78,7 +86,7 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
             }
             it?.insert(TABLE_NAME, null, values)
         }
-        getCats()
+        getCats(getFilter())
     }
 
     override fun updateCat(cat: Cat) {
@@ -90,13 +98,13 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
             }
             val count = it.update(TABLE_NAME, values, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))
         }
-        getCats()
+        getCats(getFilter())
     }
 
     override fun deleteCat(cat: Cat) {
         writableDatabase.use {
             val deleteRows = it.delete(TABLE_NAME, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))
         }
-        getCats()
+        getCats(getFilter())
     }
 }

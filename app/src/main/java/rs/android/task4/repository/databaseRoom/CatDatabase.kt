@@ -1,9 +1,12 @@
 package rs.android.task4.repository.databaseRoom
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SimpleSQLiteQuery
+import rs.android.task4.TAG
 import rs.android.task4.data.Cat
 import rs.android.task4.repository.RepositoryDAO
 import java.util.*
@@ -14,7 +17,11 @@ abstract class CatDatabase : RepositoryDAO, RoomDatabase() {
 
     abstract fun catDao(): CatDao
 
-    override fun getCats(): LiveData<List<Cat>> = catDao().getCats()
+    override fun getCats(filter: String): LiveData<List<Cat>> {
+        Log.d(TAG, "CatDatabase.getCats(): $filter")
+        val query = SimpleSQLiteQuery("SELECT * FROM cat ORDER BY $filter")
+        return catDao().getCats(query)
+    }
 
     override fun getCat(id: UUID): LiveData<Cat?> = catDao().getCat(id)
 

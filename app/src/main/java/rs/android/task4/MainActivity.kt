@@ -1,9 +1,11 @@
 package rs.android.task4
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import rs.android.task4.data.Cat
+import rs.android.task4.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity(), CatsListFragment.CatInfoListener {
 
@@ -31,5 +33,10 @@ class MainActivity : AppCompatActivity(), CatsListFragment.CatInfoListener {
             .replace(R.id.main_fragment_container, catFragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun callFilter() {
+       val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
     }
 }

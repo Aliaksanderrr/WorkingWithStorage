@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -34,7 +35,7 @@ class CatInfoFragment: Fragment() {
         catInstance = cat
         if (cat.name != "none"){
             binding.catName.setText(cat.name)
-            binding.catAge.setText(cat.birthday.toString())
+            binding.catAge.setText(cat.birthday.toString(), TextView.BufferType.EDITABLE)
             binding.catBreed.setText(cat.breed)
             binding.actionButton.text = context?.getString(R.string.update)
             isAdd = false
@@ -43,7 +44,10 @@ class CatInfoFragment: Fragment() {
         activity?.title = "Cat info"
         binding.actionButton.setOnClickListener {
             if (binding.catName.text.isNotEmpty() && binding.catAge.text.isNotEmpty() && binding.catBreed.text.isNotEmpty()){
-                val newCat = Cat(catInstance.id, binding.catName.text.toString(),catInstance.birthday, binding.catBreed.text.toString())
+                val newCat = Cat(catInstance.id,
+                                 binding.catName.text.toString(),
+                                 Integer.parseInt(binding.catAge.text.toString()),
+                                 binding.catBreed.text.toString())
                 if (isAdd){
                     viewModel.addCat(newCat)
                     binding.actionButton.text = context?.getString(R.string.update)

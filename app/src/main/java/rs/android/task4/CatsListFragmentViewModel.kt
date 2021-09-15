@@ -11,10 +11,6 @@ class CatsListFragmentViewModel : ViewModel() {
 
     val catsListLiveData: LiveData<List<Cat>> = repository.getCats()
 
-    fun addCat(cat: Cat) {
-        repository.addCat(cat)
-    }
-
     fun deleteCat(cat: Cat) {
         repository.deleteCat(cat)
     }

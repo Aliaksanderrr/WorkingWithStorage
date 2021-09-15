@@ -9,6 +9,6 @@ import java.util.*
 data class Cat(
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     val name: String = "none",
-    val birthday: Date = Date(),
+    val birthday: Int = 0,
     val breed: String = "None"
 ): Serializable

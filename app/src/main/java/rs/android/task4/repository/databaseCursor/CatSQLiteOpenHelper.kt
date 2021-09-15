@@ -21,7 +21,7 @@ private const val CAT_BREED = "breed"
 
 //Queries
 private const val CREATE_TABLE_SQL =
-    "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($CAT_ID STRING PRIMARY KEY, $CAT_NAME VARCHAR(50), $CAT_BIRTHDAY LONG, $CAT_BREED VARCHAR(50))"
+    "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($CAT_ID VARCHAR(50) PRIMARY KEY, $CAT_NAME VARCHAR(50), $CAT_BIRTHDAY INT, $CAT_BREED VARCHAR(50))"
 
 class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO, SQLiteOpenHelper(
     context,
@@ -39,7 +39,7 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_TABLE_SQL)
         val cat = Cat()
-        db.execSQL("INSERT INTO $TABLE_NAME ($CAT_ID, $CAT_NAME, $CAT_BIRTHDAY, $CAT_BREED) VALUES (\"${cat.id.toString()}\", \"${cat.name}\", \"${cat.birthday.time}\", \"${cat.breed}\");")
+        db.execSQL("INSERT INTO $TABLE_NAME ($CAT_ID, $CAT_NAME, $CAT_BIRTHDAY, $CAT_BREED) VALUES (\"${cat.id.toString()}\", \"${cat.name}\", \"${cat.birthday}\", \"${cat.breed}\");")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -57,7 +57,7 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
                 do {
                     val id = UUID.fromString(cursor.getString(cursor.getColumnIndex(CAT_ID)))
                     val name = cursor.getString(cursor.getColumnIndex(CAT_NAME))
-                    val birthday = Date(cursor.getLong(cursor.getColumnIndex(CAT_BIRTHDAY)))
+                    val birthday = cursor.getInt(cursor.getColumnIndex(CAT_BIRTHDAY))
                     val breed = cursor.getString(cursor.getColumnIndex(CAT_BREED))
                     listOfCats.add(Cat(id, name, birthday, breed))
                 } while (cursor.moveToNext())
@@ -77,7 +77,7 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
             val values = ContentValues().apply {
                 put(CAT_ID, cat.id.toString())
                 put(CAT_NAME, cat.name)
-                put(CAT_BIRTHDAY, cat.birthday.time)
+                put(CAT_BIRTHDAY, cat.birthday)
                 put(CAT_BREED, cat.breed)
             }
             it?.insert(TABLE_NAME, null, values)
@@ -89,7 +89,7 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
         writableDatabase.use {
             val values = ContentValues().apply {
                 put(CAT_NAME, cat.name)
-                put(CAT_BIRTHDAY, cat.birthday.time)
+                put(CAT_BIRTHDAY, cat.birthday)
                 put(CAT_BREED, cat.breed)
             }
             it.update(TABLE_NAME, values, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))

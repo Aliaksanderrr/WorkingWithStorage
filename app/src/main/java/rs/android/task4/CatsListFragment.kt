@@ -93,7 +93,6 @@ class CatsListFragment : Fragment() {
         return when(item.itemId){
             R.id.filter -> {
                 listener.callFilter()
-                Toast.makeText( context, "push", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -113,13 +112,13 @@ class CatsListFragment : Fragment() {
 
         override fun onItemDismiss(position: Int) {
             val catItem = getItem(position)
-            Toast.makeText( context, "delete cat name:${catItem.name}", Toast.LENGTH_SHORT).show()
             viewModel.deleteCat(catItem)
         }
-
     }
 
-    private class CatHolder(private val itemBinding: FragmentListCatItemBinding, private val listener: CatInfoListener) : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
+    private class CatHolder(private val itemBinding: FragmentListCatItemBinding,
+                            private val listener: CatInfoListener)
+        : RecyclerView.ViewHolder(itemBinding.root), View.OnClickListener{
 
         private lateinit var cat: Cat
 

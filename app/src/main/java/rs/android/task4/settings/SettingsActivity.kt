@@ -12,6 +12,7 @@ class SettingsActivity: AppCompatActivity() {
             .replace(android.R.id.content, SettingsFragment())
             .commit()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.title = "Settings"
     }
 
     override fun onSupportNavigateUp(): Boolean {

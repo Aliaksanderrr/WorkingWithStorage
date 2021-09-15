@@ -19,7 +19,7 @@ abstract class CatDatabase : RepositoryDAO, RoomDatabase() {
 
     override fun getCats(filter: String): LiveData<List<Cat>> {
         Log.d(TAG, "CatDatabase.getCats(): $filter")
-        val query = SimpleSQLiteQuery("SELECT * FROM cat ORDER BY $filter")
+        var query = SimpleSQLiteQuery("SELECT * FROM cat ORDER BY $filter")
         return catDao().getCats(query)
     }
 

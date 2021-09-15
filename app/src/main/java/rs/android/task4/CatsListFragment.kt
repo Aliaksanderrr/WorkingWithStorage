@@ -69,7 +69,7 @@ class CatsListFragment : Fragment() {
         super.onStart()
         viewModel.catsListLiveData.observe(viewLifecycleOwner, Observer { cats ->
             cats?.let {
-                Log.d(TAG, "Got catLiveData ${cats.size}")
+                Log.d(TAG, "observe catLiveData: size - ${cats.size}")
                 adapter.submitList(cats)
         }})
     }

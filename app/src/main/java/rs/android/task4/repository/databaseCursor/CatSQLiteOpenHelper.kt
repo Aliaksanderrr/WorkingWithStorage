@@ -21,7 +21,7 @@ private const val CAT_BREED = "breed"
 
 //Queries
 private const val CREATE_TABLE_SQL =
-    "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($CAT_ID VARCHAR(50) PRIMARY KEY, $CAT_NAME VARCHAR(50), $CAT_BIRTHDAY LONG, $CAT_BREED VARCHAR(50))"
+    "CREATE TABLE IF NOT EXISTS $TABLE_NAME ($CAT_ID STRING PRIMARY KEY, $CAT_NAME VARCHAR(50), $CAT_BIRTHDAY LONG, $CAT_BREED VARCHAR(50))"
 
 class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO, SQLiteOpenHelper(
     context,
@@ -36,11 +36,10 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
         return pref.getString("filter_field", "id").toString()
     }
 
-
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_TABLE_SQL)
         val cat = Cat()
-        db.execSQL("INSERT INTO $TABLE_NAME ($CAT_ID, $CAT_NAME, $CAT_BIRTHDAY, $CAT_BREED) VALUES (${cat.id.toString()}, ${cat.name}, ${cat.birthday.time}, ${cat.breed});")
+        db.execSQL("INSERT INTO $TABLE_NAME ($CAT_ID, $CAT_NAME, $CAT_BIRTHDAY, $CAT_BREED) VALUES (\"${cat.id.toString()}\", \"${cat.name}\", \"${cat.birthday.time}\", \"${cat.breed}\");")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

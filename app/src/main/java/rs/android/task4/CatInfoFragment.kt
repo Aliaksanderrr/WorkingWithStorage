@@ -1,6 +1,5 @@
 package rs.android.task4
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import rs.android.task4.data.Cat
 import rs.android.task4.databinding.FragmentCatInfoBinding
-import java.util.*
 
 class CatInfoFragment: Fragment() {
 
@@ -43,7 +41,6 @@ class CatInfoFragment: Fragment() {
 
         }
         activity?.title = "Cat info"
-//        deactivateButton()
         binding.actionButton.setOnClickListener {
             if (binding.catName.text.isNotEmpty() && binding.catAge.text.isNotEmpty() && binding.catBreed.text.isNotEmpty()){
                 val newCat = Cat(catInstance.id, binding.catName.text.toString(),catInstance.birthday, binding.catBreed.text.toString())
@@ -66,15 +63,6 @@ class CatInfoFragment: Fragment() {
         _binding = null
         super.onDestroy()
     }
-
-//    private fun activateButton(){
-//        binding.actionButton.isEnabled = true
-//    }
-//
-//    private fun deactivateButton(){
-//        binding.actionButton.isActivated = false
-//        binding.actionButton.isEnabled = false
-//    }
 
     companion object{
         fun newInstance(cat: Cat): CatInfoFragment{

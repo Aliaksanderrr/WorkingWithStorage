@@ -5,12 +5,10 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import rs.android.task4.data.Cat
-import rs.android.task4.repository.Repository
 import rs.android.task4.repository.RepositoryDAO
 import java.util.*
 
@@ -51,7 +49,6 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
 
     private fun getCursorWithCats(filter: String): Cursor{
         return readableDatabase.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $filter", null)
-//        return readableDatabase.rawQuery("SELECT * FROM $TABLE_NAME", null)
     }
 
     override fun getCats(filter: String): LiveData<List<Cat>> {
@@ -96,14 +93,14 @@ class CatSQLiteOpenHelper(context: Context, databaseName: String): RepositoryDAO
                 put(CAT_BIRTHDAY, cat.birthday.time)
                 put(CAT_BREED, cat.breed)
             }
-            val count = it.update(TABLE_NAME, values, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))
+            it.update(TABLE_NAME, values, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))
         }
         getCats(getFilter())
     }
 
     override fun deleteCat(cat: Cat) {
         writableDatabase.use {
-            val deleteRows = it.delete(TABLE_NAME, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))
+            it.delete(TABLE_NAME, CAT_ID + " LIKE ?", arrayOf(cat.id.toString()))
         }
         getCats(getFilter())
     }

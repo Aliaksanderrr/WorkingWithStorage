@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import rs.android.task4.data.Cat
-import rs.android.task4.repository.RepositoryDAO
 import java.util.*
 
 @Dao

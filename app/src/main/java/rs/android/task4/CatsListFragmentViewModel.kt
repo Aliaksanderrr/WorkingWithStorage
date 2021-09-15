@@ -1,6 +1,5 @@
 package rs.android.task4
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import rs.android.task4.data.Cat

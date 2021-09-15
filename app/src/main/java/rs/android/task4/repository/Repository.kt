@@ -2,9 +2,7 @@ package rs.android.task4.repository
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import rs.android.task4.TAG
@@ -16,6 +14,8 @@ import java.util.concurrent.Executors
 const val DATABASE_NAME = "CatsDatabase"
 
 class Repository private constructor(appContext: Context) {
+
+
 
 //    private val database: RepositoryDAO = Room.databaseBuilder(appContext, CatDatabase::class.java, DATABASE_NAME)
 //                                            .build()

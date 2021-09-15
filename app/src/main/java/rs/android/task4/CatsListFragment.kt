@@ -7,7 +7,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.*
 import rs.android.task4.data.Cat
 import rs.android.task4.databinding.FragmentListCatItemBinding
@@ -57,16 +56,12 @@ class CatsListFragment : Fragment() {
         return binding.root
     }
 
-    var num = 1
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = "Cats"
         binding.floatingActionButton.setOnClickListener {
             listener.chosenCat(Cat())
-//            viewModel.addCat(Cat(name = "Tom${num++}", breed = "Sara${num++}"))
-//            Toast.makeText( context, "add cat", Toast.LENGTH_SHORT).show()
-        }
+       }
 
     }
 
@@ -75,13 +70,8 @@ class CatsListFragment : Fragment() {
         viewModel.catsListLiveData.observe(viewLifecycleOwner, Observer { cats ->
             cats?.let {
                 Log.d(TAG, "Got catLiveData ${cats.size}")
-//                updateUI(cats)
                 adapter.submitList(cats)
         }})
-
-//        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-//        Toast.makeText(context, "Pref: ${pref.getString("filter_field", "none")}", Toast.LENGTH_LONG ).show()
-
     }
 
     override fun onResume() {
